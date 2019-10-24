@@ -49,6 +49,7 @@ links <- webpage %>%
   html_attr('href')
 
 
+
 ```
 
 ## Data Download
@@ -70,14 +71,23 @@ file_names <- paste0('data/',dataset)
 #   download.file(links[i],destfile=file_names[i])
 # }
 
+
+downloaded <- file.exists(file_names)
+
+evaluate <- !all(downloaded)
+
+
 ```
+
 
 ### Download data in a map
 
 ```{r}
 
 #Map version of the same forloop (downloading 4 files)
-map2(links,file_names,download.file)
+if(evaluate == T){
+  map2(links,file_names,download.file)
+}else{print('data already downloaded')}
 
 ```
 
@@ -167,6 +177,15 @@ Write a custom function to read in the data and append a site
 column to the data. 
 
 ```{r}
+library(pdftools)
+headers <- pdf_text('https://snowstudies.org/data/Serially-Complete-Metadata-text08.pdf') %>%
+  readr::read_lines(.) %>%
+  trimws(.) %>%
+  str_split_fixed(.,'\\.',2) %>%
+  .[,2] %>%
+  .[1:26]
+
+
 
 ```
 
